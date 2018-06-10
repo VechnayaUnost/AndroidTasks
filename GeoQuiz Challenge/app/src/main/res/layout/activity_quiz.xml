@@ -42,5 +42,4 @@
             android:contentDescription="@string/next_button"
             />
     </LinearLayout>
-
 </LinearLayout>
