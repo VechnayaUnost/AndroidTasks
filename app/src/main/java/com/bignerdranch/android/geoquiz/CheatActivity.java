@@ -11,7 +11,10 @@ import android.widget.TextView;
 public class CheatActivity extends AppCompatActivity {
 
     public static final String EXTRA_ANSWER_IS_TRUE ="com.bignerdranch.android.geoquiz.answer_is_true";
+    public static final String EXTRA_ANSWER_SHOWN ="com.bignerdranch.android.geoquiz.answer_shown";
+    private static final String KEY_SHOWN = "shown";
     private boolean mAnswerIsTrue;
+    private boolean mIsAnswerShown;
 
     private TextView mAnswerTextView;
     private Button mShowAnswer;
@@ -20,6 +23,10 @@ public class CheatActivity extends AppCompatActivity {
         Intent i = new Intent(packageContext, CheatActivity.class);
         i.putExtra(EXTRA_ANSWER_IS_TRUE, answerIsTrue);
         return i;
+    }
+
+    public static boolean wasAnswerShown(Intent result) {
+        return result.getBooleanExtra(EXTRA_ANSWER_SHOWN, false);
     }
 
     @Override
@@ -40,7 +47,26 @@ public class CheatActivity extends AppCompatActivity {
                 } else {
                     mAnswerTextView.setText(R.string.false_button);
                 }
+                mIsAnswerShown = true;
+                setAnswerShownResult(mIsAnswerShown);
             }
         });
+
+        if(savedInstanceState != null) {    //TODO: "check state"
+            mIsAnswerShown = savedInstanceState.getBoolean(KEY_SHOWN, false);
+            setAnswerShownResult(mIsAnswerShown);
+        }
+    }
+
+    private void setAnswerShownResult(boolean isAnswerShown) {
+        Intent data = new Intent();
+        data.putExtra(EXTRA_ANSWER_SHOWN, isAnswerShown);
+        setResult(RESULT_OK, data);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {    //TODO: "save state between coups"
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putBoolean(KEY_SHOWN, mIsAnswerShown);
     }
 }
