@@ -27,11 +27,11 @@ public class QuizActivity extends AppCompatActivity {
     private TextView mQuestionTextView;
 
     private Question[] mQuestionBank = new Question[] {
-            new Question(R.string.question_oceans, true),
-            new Question(R.string.question_mideast, false),
-            new Question(R.string.question_africa, false),
-            new Question(R.string.question_americas, true),
-            new Question(R.string.question_asia, true),
+            new Question(R.string.question_oceans, true, false),
+            new Question(R.string.question_mideast, false, false),
+            new Question(R.string.question_africa, false, false),
+            new Question(R.string.question_americas, true, false),
+            new Question(R.string.question_asia, true, false),
     };
 
     private int mCurrentIndex = 0;
@@ -47,7 +47,7 @@ public class QuizActivity extends AppCompatActivity {
 
         int messageResId = 0;
 
-        if(mIsCheater) {
+        if(mQuestionBank[mCurrentIndex].isCheatTrue()) {    //TODO: "check cheat"
             messageResId = R.string.judgment_toast;
         } else {
             if (userPressedTrue == answerIsTrue) {
@@ -72,7 +72,6 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
-                mIsCheater = false;
                 updateQuestion();
             }
         });
@@ -96,7 +95,6 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
-                mIsCheater = false;
                 updateQuestion();
             }
         });
@@ -138,6 +136,7 @@ public class QuizActivity extends AppCompatActivity {
                 return;
             }
             mIsCheater = CheatActivity.wasAnswerShown(data);
+            mQuestionBank[mCurrentIndex].setCheatTrue(mIsCheater);      //TODO: "set value of cheat"
         }
     }
 
