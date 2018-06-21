@@ -1,4 +1,4 @@
-package com.bignerdranch.android.geoquiz;
+package com.bignerdranch.android.criminalintent;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.bignerdranch.android.geoquiz", appContext.getPackageName());
+        assertEquals("com.bignerdranch.android.criminalintent", appContext.getPackageName());
     }
 }
