@@ -10,11 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 public class CrimeListFragment extends Fragment {
+
+    private static final int REQUEST_CRIME = 1;
+
+    private int mSelectedCrimePosition;
 
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
@@ -30,11 +33,11 @@ public class CrimeListFragment extends Fragment {
         return view;
     }
 
-    @Override
+    /*@Override
     public void onResume() {
         super.onResume();
-        updateUI();
-    }
+       // updateUI();
+    }*/
 
     private void updateUI() {       //TODO: "update list"
         CrimeLab crimeLab = CrimeLab.get(getActivity());
@@ -75,7 +78,17 @@ public class CrimeListFragment extends Fragment {
         @Override
         public void onClick(View v) {
             Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
-            startActivity(intent);
+            mSelectedCrimePosition = getAdapterPosition();
+            startActivityForResult(intent, REQUEST_CRIME);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CRIME) {
+            if(resultCode == CrimeActivity.RESULT_OK) {
+                mAdapter.notifyItemChanged(mSelectedCrimePosition);     //TODO: "effective updating RecyclerView"
+            }
         }
     }
 

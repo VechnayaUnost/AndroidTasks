@@ -1,6 +1,7 @@
 package com.bignerdranch.android.criminalintent;
 
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
@@ -41,6 +42,10 @@ public class CrimeFragment extends Fragment {
         return DateFormat.format("EEEE, MMM d, yyyy", date);
     }
 
+    public void returnResult() {    //TODO: "return value to activity-host"
+        getActivity().setResult(Activity.RESULT_OK, null);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +68,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence c, int start, int before, int count) {
                 mCrime.setTitle(c.toString());
+                returnResult();
             }
 
             @Override
@@ -81,6 +87,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mCrime.setSolved(isChecked);
+                returnResult();
             }
         });
 
