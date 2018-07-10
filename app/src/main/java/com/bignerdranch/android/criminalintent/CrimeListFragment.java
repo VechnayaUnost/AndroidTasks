@@ -77,7 +77,7 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
+            Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
             mSelectedCrimePosition = getAdapterPosition();
             startActivityForResult(intent, REQUEST_CRIME);
         }
@@ -86,7 +86,7 @@ public class CrimeListFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CRIME) {
-            if(resultCode == CrimeActivity.RESULT_OK) {
+            if(resultCode == CrimePagerActivity.RESULT_OK) {
                 mAdapter.notifyItemChanged(mSelectedCrimePosition);     //TODO: "effective updating RecyclerView"
             }
         }
