@@ -5,12 +5,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import java.util.Date;
 import java.util.List;
 
 public class CrimeListFragment extends Fragment {
@@ -22,6 +24,14 @@ public class CrimeListFragment extends Fragment {
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
 
+    public CharSequence formatDate(Date date) {     //TODO: "get format date"
+        return DateFormat.format("EEEE, MMM d, yyyy", date);
+    }
+
+    public CharSequence formatTime(Date time) {     //TODO: "get format time"
+        return DateFormat.format("h:mm a", time);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle SavedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_crime_list, container, false);
@@ -32,12 +42,6 @@ public class CrimeListFragment extends Fragment {
 
         return view;
     }
-
-    /*@Override
-    public void onResume() {
-        super.onResume();
-       // updateUI();
-    }*/
 
     private void updateUI() {       //TODO: "update list"
         CrimeLab crimeLab = CrimeLab.get(getActivity());
@@ -57,6 +61,7 @@ public class CrimeListFragment extends Fragment {
 
         private TextView mTitleTextView;
         private TextView mDateTextView;
+        private TextView mTimeTextView;
         private CheckBox mSolvedCheckBox;
         private Crime mCrime;
 
@@ -65,13 +70,15 @@ public class CrimeListFragment extends Fragment {
             itemView.setOnClickListener(this);
             mTitleTextView = itemView.findViewById(R.id.list_item_crime_title_text_view);
             mDateTextView = itemView.findViewById(R.id.list_item_crime_date_text_view);
+            mTimeTextView = itemView.findViewById(R.id.list_item_crime_time_text_view);
             mSolvedCheckBox = itemView.findViewById(R.id.list_item_crime_solved_check_box);
         }
 
         public void bindCrime(Crime crime) {
             mCrime = crime;
             mTitleTextView.setText(mCrime.getTitle());
-            mDateTextView.setText(mCrime.getDate().toString());
+            mDateTextView.setText(formatDate(mCrime.getDate()).toString());
+            mTimeTextView.setText(formatTime(mCrime.getTime()).toString());
             mSolvedCheckBox.setChecked(mCrime.isSolved());
         }
 
