@@ -66,11 +66,13 @@ public class DatePickerFragment extends DialogFragment {
     }
 
     private void sendResult(int resultCode, Date date) {    //TODO: "callback of the target fragment"
-        if (getTargetFragment() == null) {
-            return;
-        }
         Intent intent = new Intent();
         intent.putExtra(EXTRA_DATE, date);
+
+        if (getTargetFragment() == null) {
+            getActivity().setResult(resultCode, intent);
+            return;
+        }
 
         dismiss();
         getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
