@@ -13,7 +13,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.Date;
@@ -30,6 +32,8 @@ public class CrimeListFragment extends Fragment {
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
     private boolean mSubtitleVisible;
+    private Button mFirstCrimeButton;
+    private LinearLayout mInvisibleLayout;
 
     public CharSequence formatDate(Date date) {     //TODO: "get format date"
         return DateFormat.format("EEEE, MMM d, yyyy", date);
@@ -42,6 +46,11 @@ public class CrimeListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if(CrimeLab.get(getActivity()).getCrimes().size() == 0) {   //TODO: "empty crime list check"
+            mInvisibleLayout.setVisibility(View.VISIBLE);
+        } else {
+            mInvisibleLayout.setVisibility(View.INVISIBLE);
+        }
         updateUI();
     }
 
@@ -63,6 +72,19 @@ public class CrimeListFragment extends Fragment {
 
         mCrimeRecyclerView = view.findViewById(R.id.crime_recycler_view);
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        mInvisibleLayout = view.findViewById(R.id.invisible_layout);
+
+        mFirstCrimeButton = view.findViewById(R.id.first_crime_button);
+        mFirstCrimeButton.setOnClickListener(new View.OnClickListener() {       //TODO: "add crime, if crime list is empty"
+            @Override
+            public void onClick(View v) {
+                Crime crime = new Crime();
+                CrimeLab.get(getActivity()).addCrime(crime);
+                Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId());
+                startActivity(intent);
+            }
+        });
 
         if(savedInstanceState != null) {
             mSubtitleVisible = savedInstanceState.getBoolean(SAVED_SUBTITLE_VISIBLE);
