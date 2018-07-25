@@ -18,6 +18,7 @@
     <string name="list_is_empty_label">List is empty!</string>
     <string name="add_first_crime">Add your first crime</string>
     <string name="crime_suspect_text">Choose Suspect</string>
+    <string name="call_suspect_text">Call Suspect</string>
     <string name="crime_report_text">Send Crime Report</string>
     <string name="crime_report">%1$s!
         The crime was discovered on %2$s at %3$s. %4$s, and %5$s
