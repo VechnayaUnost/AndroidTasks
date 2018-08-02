@@ -23,6 +23,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -70,6 +71,8 @@ public class CrimeFragment extends Fragment {
     private ImageView mPhotoView;
 
     private String mSuspectId;
+    private int mPhotoWidth;
+    private int mPhotoHeight;
 
     public static CrimeFragment newInstance(UUID crimeId) {     //TODO: "join args to Fragment"
         Bundle args = new Bundle();
@@ -258,7 +261,19 @@ public class CrimeFragment extends Fragment {
         });
 
         mPhotoView = v.findViewById(R.id.crime_photo);
-        updatePhotoView();
+        ViewTreeObserver observer = mPhotoView.getViewTreeObserver();       //TODO: "effective photo upload"
+        if (observer.isAlive()) {
+            observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    mPhotoView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    mPhotoWidth = mPhotoView.getMeasuredWidth();
+                    mPhotoHeight = mPhotoView.getMeasuredHeight();
+
+                    updatePhotoView();
+                }
+            });
+        }
         mPhotoView.setOnClickListener(new View.OnClickListener() {      //TODO: "output of the enlarged image"
             @Override
             public void onClick(View v) {
@@ -440,7 +455,7 @@ public class CrimeFragment extends Fragment {
             mPhotoView.setImageDrawable(null);
             mPhotoView.setEnabled(false);
         } else {
-            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
+            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), mPhotoWidth, mPhotoHeight);
             mPhotoView.setImageBitmap(bitmap);
             mPhotoView.setEnabled(true);
         }
