@@ -69,10 +69,15 @@ public class CrimeFragment extends Fragment {
     private Button mCallSuspectButton;
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
+    private Callbacks mCallbacks;
 
     private String mSuspectId;
     private int mPhotoWidth;
     private int mPhotoHeight;
+
+    public interface Callbacks {    //TODO: "required interface for host activity"
+        void onCrimeUpdated(Crime crime);
+    }
 
     public static CrimeFragment newInstance(UUID crimeId) {     //TODO: "join args to Fragment"
         Bundle args = new Bundle();
@@ -83,16 +88,18 @@ public class CrimeFragment extends Fragment {
         return fragment;
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mCallbacks = (Callbacks) activity;
+    }
+
     public CharSequence formatDate(Date date) {     //TODO: "get format date"
         return DateFormat.format("EEEE, MMM d, yyyy", date);
     }
 
     public CharSequence formatTime(Date time) {     //TODO: "get format time"
         return DateFormat.format("h:mm a", time);
-    }
-
-    public void returnResult() {    //TODO: "return value to activity-host"
-        getActivity().setResult(Activity.RESULT_OK, null);
     }
 
     @Override
@@ -112,6 +119,12 @@ public class CrimeFragment extends Fragment {
     }
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_crime, container, false);
 
@@ -126,7 +139,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence c, int start, int before, int count) {
                 mCrime.setTitle(c.toString());
-                returnResult();
+                updateCrime();
             }
 
             @Override
@@ -165,7 +178,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mCrime.setSolved(isChecked);
-                returnResult();
+                updateCrime();
             }
         });
 
@@ -312,13 +325,13 @@ public class CrimeFragment extends Fragment {
         if (requestCode == REQUEST_DATE) {
             Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mCrime.setDate(date);
+            updateCrime();
             updateDate();
-            returnResult();
         } else if (requestCode == REQUEST_TIME) {
             Date time = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
             mCrime.setTime(time);
+            updateCrime();
             updateTime();
-            returnResult();
         } else if (requestCode == REQUEST_CONTACT && data != null) {
             String suspect = getContactName(data);
             mCrime.setSuspect(suspect);
@@ -333,12 +346,16 @@ public class CrimeFragment extends Fragment {
                 mCallSuspectButton.setEnabled(false);
                 mCallSuspectButton.setText(R.string.call_suspect_text);
             }
-
-            returnResult();
+            updateCrime();
         } else if (requestCode == REQUEST_PHOTO) {
+            updateCrime();
             updatePhotoView();
-            returnResult();
         }
+    }
+
+    private void updateCrime() {    //TODO: "update crime when you change the short description of the crime"
+        CrimeLab.get(getActivity()).updateCrime(mCrime);
+        mCallbacks.onCrimeUpdated(mCrime);
     }
 
     @Override
