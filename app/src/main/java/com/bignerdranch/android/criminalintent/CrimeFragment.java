@@ -74,6 +74,7 @@ public class CrimeFragment extends Fragment {
     private String mSuspectId;
     private int mPhotoWidth;
     private int mPhotoHeight;
+    private Boolean mLargeScreen;
 
     public interface Callbacks {    //TODO: "required interface for host activity"
         void onCrimeUpdated(Crime crime);
@@ -109,6 +110,8 @@ public class CrimeFragment extends Fragment {
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);     //TODO: "transmission Crime"
         setHasOptionsMenu(true);
         mPhotoFile = CrimeLab.get(getActivity()).getPhotoFile(mCrime);
+
+        mLargeScreen = getResources().getBoolean(R.bool.large_screen);
     }
 
     @Override
@@ -153,10 +156,16 @@ public class CrimeFragment extends Fragment {
         mDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager manager = getFragmentManager();
-                DatePickerFragment dialog = DatePickerFragment.newInstance(mCrime.getDate());
-                dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
-                dialog.show(manager, DIALOG_DATE);
+                if(mLargeScreen) {      //TODO: "Optimize application for different screen sizes."
+                    FragmentManager manager = getFragmentManager();
+                    DatePickerFragment dialog = DatePickerFragment.newInstance(mCrime.getDate());
+                    dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
+                    dialog.show(manager, DIALOG_DATE);
+                }
+                else {
+                    Intent intent = DatePickerActivity.newIntent(getContext(), mCrime.getDate());
+                    startActivityForResult(intent, REQUEST_DATE);
+                }
             }
         });
 
