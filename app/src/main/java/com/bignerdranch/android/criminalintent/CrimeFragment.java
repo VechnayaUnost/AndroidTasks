@@ -12,6 +12,7 @@ import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
@@ -319,7 +320,16 @@ public class CrimeFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.menu_item_delete_crime:
                 CrimeLab.get(getActivity()).deleteCrime(mCrime);
-                getActivity().finish();
+                if (mLargeScreen) {
+                    mCallbacks.onCrimeUpdated(null);
+                    FragmentManager fm = getFragmentManager();
+                    Fragment fragment = fm.findFragmentById(R.id.detail_fragment_container);
+                    fm.beginTransaction()
+                            .remove(fragment)
+                            .commit();
+                } else {
+                    getActivity().finish();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

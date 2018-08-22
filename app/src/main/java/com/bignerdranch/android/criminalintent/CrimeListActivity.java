@@ -35,5 +35,6 @@ public class CrimeListActivity extends SingleFragmentActivity
                 getSupportFragmentManager()
                 .findFragmentById(R.id.fragmentContainer);
         listFragment.updateUI();
+        listFragment.checkEmptyList();
     }
 }

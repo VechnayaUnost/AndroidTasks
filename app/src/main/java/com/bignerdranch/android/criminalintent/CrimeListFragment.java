@@ -54,7 +54,11 @@ public class CrimeListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(CrimeLab.get(getActivity()).getCrimes().size() == 0) {   //TODO: "empty crime list check"
+        checkEmptyList();
+    }
+
+    public void checkEmptyList() {  //TODO: "empty crime list check"
+        if(CrimeLab.get(getActivity()).getCrimes().size() == 0) {
             mInvisibleLayout.setVisibility(View.VISIBLE);
         } else {
             mInvisibleLayout.setVisibility(View.INVISIBLE);
@@ -95,8 +99,9 @@ public class CrimeListFragment extends Fragment {
             public void onClick(View v) {
                 Crime crime = new Crime();
                 CrimeLab.get(getActivity()).addCrime(crime);
-                Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId());
-                startActivity(intent);
+                updateUI();
+                mCallbacks.onCrimeSelected(crime);
+                mInvisibleLayout.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -130,6 +135,7 @@ public class CrimeListFragment extends Fragment {
                 CrimeLab.get(getActivity()).addCrime(crime);
                 updateUI();
                 mCallbacks.onCrimeSelected(crime);
+                mInvisibleLayout.setVisibility(View.INVISIBLE);
                 return true;
             case R.id.menu_item_show_subtitle:
                 mSubtitleVisible = !mSubtitleVisible;
