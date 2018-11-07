@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -15,6 +17,8 @@ import java.util.List;
 
 public class BoxDrawingView extends View {
     private static final String TAG = "BoxDrawingView";
+    private static final String PARENT_VIEW_SAVED_STATE = "parentView";
+    private static final String CHILD_VIEW_SAVED_STATE = "childView";
 
     private Box mCurrentBox;
     private List<Box> mBoxen = new ArrayList<>();
@@ -33,6 +37,25 @@ public class BoxDrawingView extends View {
 
         mBackgroundPaint = new Paint();
         mBackgroundPaint.setColor(0xfff8efe0);
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(PARENT_VIEW_SAVED_STATE, superState);
+        bundle.putParcelableArrayList(CHILD_VIEW_SAVED_STATE, (ArrayList<Box>) mBoxen);
+        Log.d(TAG,"Saving Instance State");
+
+        return bundle;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        Bundle bundle = (Bundle) state;
+        super.onRestoreInstanceState(bundle.getParcelable(PARENT_VIEW_SAVED_STATE));
+        mBoxen = bundle.getParcelableArrayList(CHILD_VIEW_SAVED_STATE);
+        Log.d(TAG,"Restoring Instance State");
     }
 
     @Override
